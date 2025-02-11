@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>newsUpload</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&family=Gamja+Flower&family=Gowun+Dodum&family=Moirai+One&family=Nanum+Gothic&family=Noto+Sans+KR:wght@100..900&display=swap');
+
+    * {
+        font-family: "Nanum Gothic", serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    button {
+        border: none !important;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .top {
+        height: 30px;
+        background-color: white;
+
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        justify-content: space-between;
+
+        margin-top: 5px;
+    }
+
+    .newsHome {
+        width: 70px;
+        height: 30px;
+        background-color: white;
+        border: 0.1px solid white;
+
+        color: #00C73C;
+        font-size: 28px;
+
+        font-family: "Bebas Neue", serif;
+        font-weight: 400;
+        font-style: normal;
+
+    }
+
+    .uploadNews {
+        width: 70px;
+        height: 30px;
+        background-color: #00C73C;
+        border: 0.1px solid black;
+        margin-top: 10px;
+
+        color: white;
+        font-size: 12px;
+
+    }
+
+    .middle {
+        height: 30px;
+        background-color: white;
+
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        justify-content: flex-start;
+
+        margin-top: 5px;
+    }
+
+    .addPhoto {
+        width: 50px;
+        height: 30px;
+        color: darkgrey;
+        font-size: 10px;
+
+        background-color: transparent;
+        border: 0px;
+    }
+
+    .addLink,
+    .addQuote,
+    .addContour,
+    .toH1,
+    .addTable {
+        width: 50px;
+        height: 30px;
+        color: darkgrey;
+        font-size: 10px;
+
+        background-color: transparent;
+        border: 0px;
+        margin-left: 10px;
+    }
+
+    .middle2 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+        background-color: white;
+    }
+
+    .middle2 hr {
+        width: 100%;
+        height: 1px;
+        border: none;
+        background-color: darkgrey;
+        margin: 7px 0 0 0;
+    }
+
+    .leftArray,
+    .centerArray,
+    .rightArray {
+        background-color: transparent;
+        border: none;
+        padding: 2px;
+        align-self: flex-start;
+        margin-left: 5px;
+        margin-top: 3px;
+    }
+
+    .main {
+        min-height: 100vh;
+        background-color: #e9ecef;
+        background-size: cover;
+
+
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px 0;
+
+    }
+
+    .writting {
+        width: 50%;
+        height: 95%;
+        background-color: white;
+
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 30px;
+        flex-direction: column;
+    }
+
+    .inputTitle {
+        width: 100%;
+        height: 60px;
+        background-color: transparent;
+        border: none;
+        outline: none;
+
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        justify-content: center;
+
+        font-size: 30px;
+    }
+
+    .inputContent {
+        width: 100%;
+        height: 300px;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        resize: none;
+
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        justify-content: center;
+
+        overflow-y: auto;
+        max-height: 80vh;
+    }
+
+    .inputTitle:focus,
+    .inputContent:focus {
+        outline: none;
+        border: none;
+        box-shadow: none;
+    }
+
+    blockquote::before {
+        content: "\201C";
+        font-size: 3em;
+        color: #bcbcbc;
+        float: left;
+        margin: -5px 10px 0px -10px;
+    }
+
+    .chooseCategory {
+        color: black;
+        margin: 10px 0 0 0;
+
+        outline: darkgray;
+    }
+
+    .writtenBy {
+        background-color: white;
+        margin: 10px 0 0 0;
+    }
+</style>
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, query, where, orderBy, limit, Timestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // Firebase 구성 정보
+    const firebaseConfig = {
+        구성정보
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.onload = function () {
+    document.getElementById("addPhotoBtn").addEventListener("click", addPhoto);
+    document.getElementById("addLinkBtn").addEventListener("click", addLink);
+    document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
+    document.getElementById("addContourBtn").addEventListener("click", addContour);
+    document.getElementById("toH1Btn").addEventListener("click", toH1);
+    document.getElementById("addTableBtn").addEventListener("click", addTable);
+    document.getElementById("leftArrayBtn").addEventListener("click", leftArray);
+    document.getElementById("centerArrayBtn").addEventListener("click", centerArray);
+    document.getElementById("rightArrayBtn").addEventListener("click", rightArray);
+};
+
+    //뉴스 메인으로 돌아가기
+    function backToHome() {
+        window.location.href = "";
+    }
+
+    //업로드하기
+    async function uploadNews() {
+    const title = document.getElementById("title").value.trim();
+    const content = document.getElementById("content").innerHTML.trim();
+    const image = document.getElementById("photoBox").innerHTML.trim() || "";
+    const link = document.getElementById("linkBox").innerHTML.trim() || "";
+    const category = document.querySelector(".chooseCategory").value;
+    const author = document.querySelector(".writtenBy input").value.trim();
+
+    try {
+        const docRef = await addDoc(collection(db, "news"), {
+            title: title,
+            content: content,
+            image: image,
+            link: link,
+            category: category,
+            author: author,
+            timestamp: Timestamp.now()
+        });
+
+        alert("업로드가 완료되었습니다");
+        console.log("Document written with ID: ", docRef.id);
+
+        window.location.href = "news_list.html";  
+    } catch (error) {
+        console.error("Error adding document: ", error);
+        alert("업로드 중 문제가 발생했습니다.");
+    }
+    }
+
+    window.onload = function () {
+    document.getElementById("uploadBtn").addEventListener("click", uploadNews);
+};
+
+    //사진 입력받기
+    function addPhoto() {
+    let imageUrl = prompt("사진의 URL을 입력하세요:");
+    if (imageUrl) {
+        let previewBox = document.getElementById("photoBox");
+        previewBox.innerHTML = `<img src="${imageUrl}" style="width: 700px; height: 400px; margin-top: 10px;">`;
+        previewBox.style.display = "block";
+    }
+}
+
+    //링크 입력받기
+    function addLink() {
+    let linkUrl = prompt("링크를 입력하세요:");
+    if (linkUrl) {
+        let previewBox = document.getElementById("linkBox");
+        previewBox.innerHTML = `<a href="${linkUrl}" target="_blank">${linkUrl}</a>`;
+        previewBox.style.display = "block";
+    }
+}
+
+    // 인용구 추가
+    function addQuote() {
+        let blockquoteTag = document.createElement("blockquote");
+        blockquoteTag.style.fontSize = "1.2em";
+        blockquoteTag.style.paddingLeft = "30px";
+        blockquoteTag.style.borderLeft = "5px solid #00C73C";
+
+        let contentBox = document.getElementById("content");
+
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(blockquoteTag);
+
+        range.setStartAfter(blockquoteTag);
+        range.setEndAfter(blockquoteTag);
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+
+
+    //구분선 추가
+    function addContour() {
+        let hrTag = document.createElement("hr");
+        hrTag.style.width = "100%";
+        hrTag.style.border = "1px solid darkgrey";
+
+        let contentBox = document.getElementById("content");
+
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(hrTag);
+
+        range.setStartAfter(hrTag);
+        range.setEndAfter(hrTag);
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+
+    //강조해주기
+    function toH1() {
+        document.execCommand("formatBlock", false, "H1");
+    }
+
+    document.getElementById("content").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            setTimeout(() => {
+                document.execCommand("formatBlock", false, "div");
+            }, 10);
+        }
+    });
+
+    //표 추가
+    function addTable() {
+        let tableHTML = `
+    <div class="tableContainer" style="width: 100%; text-align: left; margin-top: 10px; position: relative;">
+        <table style="width: 80%; max-width: 800px; margin: auto; border-collapse: collapse; border: 2px solid #333; table-layout: fixed;">
+            <thead>
+                <tr style="background-color: white; color: black;">
+                    <th contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 2px solid #333; text-align: center;"></th>
+                    <th contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 2px solid #333; text-align: center;"></th>
+                    <th contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 2px solid #333; text-align: center;"></th>
+                    <th contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 2px solid #333; text-align: center;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 1px solid #aaa; text-align: center;"></th>
+                    <td contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 1px solid #aaa; text-align: center;"></td>
+                    <td contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 1px solid #aaa; text-align: center;"></td>
+                    <td contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 1px solid #aaa; text-align: center;"></td>
+                </tr>
+                <tr>
+                    <th contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 1px solid #aaa; text-align: center;"></th>
+                    <td contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 1px solid #aaa; text-align: center;"></td>
+                    <td contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 1px solid #aaa; text-align: center;"></td>
+                    <td contenteditable="true" style="width: 25%; height: 40px; padding: 8px; border: 1px solid #aaa; text-align: center;"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    `;
+
+        const contentBox = document.getElementById("content");
+        const tableContainer = document.createElement("div");
+        tableContainer.innerHTML = tableHTML;
+
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(tableContainer);
+
+        contentBox.style.textAlign = 'left';
+
+        let br = document.createElement("br");
+        tableContainer.appendChild(br);
+        moveCursorToEnd(br);
+    }
+
+    //왼쪽 정렬
+    function leftArray() {
+        let contentBox = document.getElementById("content");
+        contentBox.style.textAlign = "left";
+    }
+
+    //가운데 정렬
+    function centerArray() {
+        let contentBox = document.getElementById("content");
+        contentBox.style.textAlign = "center";
+    }
+
+    //오른쪽 정렬
+    function rightArray() {
+        let contentBox = document.getElementById("content");
+        contentBox.style.textAlign = "right";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("addPhotoBtn").addEventListener("click", addPhoto);
+    document.getElementById("addLinkBtn").addEventListener("click", addLink);
+});
+
+</script>
+
+<body>
+    <div class="top">
+        <button onclick="backToHome()" class="newsHome">News</button>
+        <button id="uploadBtn" type="button" class="uploadNews publish_btn__m9KHH"><span class="text__d09H7">발행
+            </span><i class="icon_wrap__VHKFf"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="13"
+                    aria-hidden="true" class="icon__X_qrd">
+                    <g fill="none" fill-rule="evenodd">
+                        <rect width="11" height="13" fill="#FFF" rx="1"></rect>
+                        <path fill="#00C73C" d="M2 9h4v1H2zm0-2h7v1H2zm0-2h7v1H2zm0-2h7v1H2z"></path>
+                    </g>
+                </svg></i></button>
+    </div>
+    <hr width="100%" height="1px" color="darkgrey">
+    <div class="middle">
+        <button id="addPhotoBtn" class="addPhoto">
+            <img src="https://cdn-icons-png.flaticon.com/512/1160/1160358.png" width="30px" height="30px">
+            <p>사진</p>
+        </button>
+        <button id="addLinkBtn" class="addLink">
+            <img src="https://cdn-icons-png.flaticon.com/512/659/659999.png" width="30px" height="30px">
+            <p>링크</p>
+        </button>
+        <button id="addQuoteBtn" class="addQuote">
+            <img src="https://cdn-icons-png.flaticon.com/512/7350/7350737.png" width="30px" height="30px">
+            <p>인용구</p>
+        </button>
+        <button id="addContourBtn" class="addContour">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmQ2KcMneKA05MimvUs442AYny2iv7I5Ya9g&s"
+                width="30px" height="30px">
+            <p>구분선</p>
+        </button>
+        <button id="toH1Btn" class="toH1">
+            <img src="https://cdn-icons-png.flaticon.com/256/10435/10435031.png" width="30px" height="30px">
+            <p>강조</p>
+        </button>
+        <button id="addTableBtn" class="addTable">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPzC4oHeCQogJlyL28zezQCoNUndlbjwqs9w&s"
+                width="30px" height="30px">
+            <p>표 추가</p>
+        </button>
+    </div>
+    <div class="middle2">
+        <hr width="100%" color="darkgrey">
+        <div class="button-group">
+            <button id="leftArrayBtn" class="leftArray">
+                <img src="https://cdn-icons-png.flaticon.com/512/1994/1994233.png" width="15px" height="15px">
+            </button>
+            <button id="centerArrayBtn" class="centerArray">
+                <img src="https://w7.pngwing.com/pngs/888/43/png-transparent-center-align-feather-icon.png" width="15px"
+                    height="15px">
+            </button>
+            <button id="rightArrayBtn" class="rightArray">
+                <img src="https://cdn-icons-png.flaticon.com/512/10140/10140056.png" width="15px" height="15px">
+            </button>
+        </div>
+
+        <hr width="100%" color="darkgrey">
+    </div>
+
+    <div class="main">
+        <div class="writting">
+            <div>
+                <input type="text" class="inputTitle form-control mb-3" id="title" placeholder="제목"
+                    style="width: 90vh;">
+                <hr width="100%" color="darkgrey">
+            </div>
+            <div>
+                <div class="photo" id="photoBox" style="display: none;"></div>
+
+                <div id="content" class="inputContent form-control" contenteditable="true" style="width: 90vh; height: 80vh; border: 1px solid #ccc; padding: 10px;
+    text-align: left; vertical-align: top; min-height: 80vh; display: block;">
+                </div>
+
+                <div id="linkBox" style="display: none;"></div>
+
+                <div>
+                    <select class="chooseCategory form-select" aria-label="Default select example">
+                        <option selected>카테고리</option>
+                        <option value="1">정치</option>
+                        <option value="2">경제</option>
+                        <option value="3">사회</option>
+                        <option value="3">생활</option>
+                        <option value="3">과학</option>
+                        <option value="3">세계</option>
+                    </select>
+                </div>
+                <div class="writtenBy input-group input-group-sm mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">name</span>
+                    <input type="text" class="form-control" aria-label="Sizing example input"
+                        aria-describedby="inputGroup-sizing-sm">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
